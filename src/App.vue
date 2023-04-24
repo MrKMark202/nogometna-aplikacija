@@ -1,15 +1,17 @@
 <template>
+  
   <nav>
     <div class="grid-item">
       <router-link to="/Home">Home</router-link> |
-      <router-link to="/About us">About us</router-link>
+      <router-link to="/AboutUs">About us</router-link>
     </div>
-
-    <h1 style="color: white; font-size:200px; text-align: center; margin-top: 150px;">WELCOME</h1>
+    <router-view></router-view>
   </nav>
+
 </template>
 
 <script>
+
 export default {
     data () {
       return {
