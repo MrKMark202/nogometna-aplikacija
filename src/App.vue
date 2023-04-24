@@ -4,6 +4,8 @@
       <router-link to="/Home">Home</router-link> |
       <router-link to="/About us">About us</router-link>
     </div>
+
+    <h1 style="color: white; font-size:200px; text-align: center; margin-top: 150px;">WELCOME</h1>
   </nav>
 </template>
 
