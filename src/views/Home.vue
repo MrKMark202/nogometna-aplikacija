@@ -1,6 +1,6 @@
 <template>
 
-    <div class="body1">
+    <div>
           <div class="naslov">
             <h1>Nogometna Aplikacija</h1>
           </div>
@@ -21,6 +21,7 @@ body
   background-image: linear-gradient(rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0.20)), url(https://studentski.hr/system/pictures/images/5/original/3a55c38d6c18374ba244590a2117d169dc09d0d7.jpg?1440585212); 
   background-size: cover; 
   z-index: -1;
+  color: white;
   }
 
   .naslov

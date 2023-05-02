@@ -1,9 +1,53 @@
 <template>
-  
   <nav>
-    <div class="grid-item">
-      <router-link to="/Home">Home</router-link> |
-      <router-link to="/AboutUs">About us</router-link>
+    <div class="grid-container">
+      <div class="grid-item1">
+
+
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer" style="color:white;"></v-app-bar-nav-icon>
+
+
+    <v-navigation-drawer
+      v-model="drawer"
+      absolute
+      temporary
+      style="background-color: green;"
+    >
+      <v-list style="padding:10px;">
+        <v-list-item-group
+          v-model="group"
+          active-class="deep-purple--text text--accent-4"
+        >
+          <v-list-item>
+            <router-link to="/" style="text-decoration: none;">Home</router-link>
+          </v-list-item>
+          <v-list-item>
+            <router-link to="/AboutUs" style="text-decoration: none;">About us</router-link>
+          </v-list-item>
+
+        </v-list-item-group>
+       
+      </v-list>
+      
+    </v-navigation-drawer>
+
+
+      </div>
+      <div class="grid-item2" style="text-align: right;">
+        <v-btn
+          elevation="2"
+          style="background-color: green;"
+        >
+          <router-link to="/LogIN" style="text-decoration: none;">LogIn</router-link>
+        </v-btn>
+        |
+        <v-btn
+        elevation="2"
+        style="background-color: green;"
+        >
+          <router-link to="/SignUP" style="text-decoration: none;">SignUp</router-link>
+        </v-btn>
+      </div>
     </div>
     <router-view></router-view>
   </nav>
@@ -11,12 +55,26 @@
 </template>
 
 <script>
-
+/*
 export default {
     data () {
       return {
         drawer: null,
       }
+    },
+  }
+  */
+
+  export default {
+    data: () => ({
+      drawer: false,
+      group: null,
+    }),
+
+    watch: {
+      group () {
+        this.drawer = false
+      },
     },
   }
 </script>
@@ -27,7 +85,6 @@ export default {
   {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
-    text-align: right;
     color: #2c3e50;
   }
 
@@ -44,13 +101,18 @@ export default {
   {
     display: grid;
     grid-template-columns: auto auto;
+    padding: 20px;
+    background-color: rgb(7, 45, 7);
   }
 
-  .grid-item 
+  .grid-item1
   {
-    padding: 20px;
-    padding-right: 70px;
-    background-color: rgb(5, 45, 9);
     font-size: 30px;
   }
+
+  .grid-item2
+  {
+    font-size: 30px;
+  }
+
 </style>
