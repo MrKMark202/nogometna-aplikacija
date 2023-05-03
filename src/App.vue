@@ -24,6 +24,15 @@
           <v-list-item>
             <router-link to="/AboutUs" style="text-decoration: none;">About us</router-link>
           </v-list-item>
+          <v-list-item>
+            <router-link to="/KreirajLIGU" style="text-decoration: none;">Kreiraj ligu</router-link>
+          </v-list-item>
+          <v-list-item>
+            <router-link to="/KreirajKlub" style="text-decoration: none;">Kreiraj klub</router-link>
+          </v-list-item>
+          <v-list-item>
+            <router-link to="/KreirajUtakmicu" style="text-decoration: none;">Kreiraj utakmicu</router-link>
+          </v-list-item>
 
         </v-list-item-group>
        

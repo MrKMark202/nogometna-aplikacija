@@ -27,7 +27,22 @@ const routes = [
     path: '/SignUP',
     name: 'SignUp',
     component: () => import(/* webpackChunkName: "about" */ '../views/SignUP.vue')
-  }
+  },
+  {
+    path: '/KreirajLigu',
+    name: 'KreirajLigu',
+    component: () => import(/* webpackChunkName: "about" */ '../views/KreirajLIGU.vue')
+  },
+  {
+    path: '/KreirajKlub',
+    name: 'KreirajKlub',
+    component: () => import(/* webpackChunkName: "about" */ '../views/KreirajKLUB.vue')
+  },
+  {
+    path: '/KreirajUtakmicu',
+    name: 'KreirajUtakmicu',
+    component: () => import(/* webpackChunkName: "about" */ '../views/KreirajTEKMU.vue')
+  },
 ]
 
 const router = new VueRouter({
