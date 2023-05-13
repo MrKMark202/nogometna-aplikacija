@@ -64,16 +64,6 @@
 </template>
 
 <script>
-/*
-export default {
-    data () {
-      return {
-        drawer: null,
-      }
-    },
-  }
-  */
-
   export default {
     data: () => ({
       drawer: false,

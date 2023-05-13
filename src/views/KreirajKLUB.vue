@@ -9,22 +9,20 @@
             <v-text-field label="Godina osnivanja" variant="underlined"></v-text-field>
             <v-text-field label="Država" variant="underlined"></v-text-field>
 
-
-
             <v-container fluid>
-    <v-row align-items="center">
-      <v-col
-        class="d-flex"
-        cols="12"
-        sm="6"
-      >
-        <v-select
-          :items="items"
-          label="Standard"
-        ></v-select>
-      </v-col>
-    </v-row>
-  </v-container>
+              <v-row align-items="center">
+              <v-col
+              class="d-flex"
+              cols="12"
+              sm="6"
+            >
+            <v-select
+              :items="stvari"
+              label="Standard"
+            ></v-select>
+            </v-col>
+            </v-row>
+            </v-container>
 
             <v-file-input
                 label="Grb Kluba"
@@ -62,7 +60,7 @@
 <script>
   export default {
     data: () => ({
-      items: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+      stvari: ['Foo', 'Bar', 'Fizz', 'Buzz'],
     }),
   }
 </script>

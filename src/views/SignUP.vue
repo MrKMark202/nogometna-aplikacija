@@ -10,13 +10,9 @@
       style="max-width: 500px; margin-top: 80px; margin-left: 14%; padding: 30px;"
     >
 
-    <v-tittle> Imaš li već račun? <v-btn style="margin-left:10px;"> <router-link to="/LogIn" style="color:black; text-decoration: none;"> Prijavi se! </router-link></v-btn> </v-tittle>
+    <v-card-title> Imaš li već račun? <v-btn style="margin-left:10px;"> <router-link to="/LogIn" style="color:black; text-decoration: none;"> Prijavi se! </router-link></v-btn> </v-card-title>
 
-      <v-form
-        ref="form"
-        v-model="form"
-        style="margin-top: 20px;"
-      >
+      <v-form ref="form" v-model="form" style="margin-top: 20px;">
 
       <v-text-field
           v-model="name"
@@ -33,37 +29,6 @@
           label="Surname"
           style="min-height: 100px"
         ></v-text-field>
-
-        <v-container grid-list-md>
-        <v-layout row wrap>
-      <v-flex xs12 lg6>
-        <v-menu
-          ref="menu1"
-          v-model="menu1"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          lazy
-          transition="scale-transition"
-          offset-y
-          full-width
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="dateFormatted"
-              label="Date"
-              hint="MM/DD/YYYY format"
-              persistent-hint
-              @blur="date = parseDate(dateFormatted)"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
-        </v-menu>
-      </v-flex>
-    </v-layout>
-</v-container>
 
       <v-text-field
           v-model="email"
@@ -107,11 +72,13 @@
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
+          type="button"
           :disabled="!form"
           :loading="isLoading"
           class="white--text"
           color="black"
           depressed
+          @click="signup"
         >
           SignUP!
         </v-btn>
@@ -122,13 +89,25 @@
 
 
 <script>
+
+import {
+	doc,
+	auth,
+	db,
+	setDoc,
+	createUserWithEmailAndPassword,
+} from "@/firebase"
+
   export default {
+    name: "SignUP",
     data: () => ({
       agreement: false,
-      email: undefined,
+      name: null,
+      surname: null,
+      email: null,
       form: false,
       isLoading: false,
-      password: undefined,
+      password: null,
       rules: {
         email: v => !!(v || '').match(/@/) || 'Please enter a valid email',
         length: len => v => (v || '').length >= len || `Invalid character length, required ${len}`,
@@ -137,7 +116,42 @@
         required: v => !!v || 'This field is required',
       },
     }),
-  }
+
+    methods: {
+      clearFormData() {
+			this.name = null;
+			this.surname = null;
+			this.email = null;
+			this.password = null;
+		},
+
+    postActionMoveToView() {
+			this.$router.push({ path: "/" });
+		},
+
+    async saveAdditionalData(user, email, name, surname) {
+			await setDoc(doc(db, "users", email), {
+				Email: email,
+				Name: name,
+				Surname: surname,
+				AuthorisationType: "USER",
+			});
+		},
+      signup() {
+        createUserWithEmailAndPassword(auth, this.email,this.password)
+          .then((userCredital) =>{
+            alert("Uspješna registracija");
+            const user = userCredital.user;
+            const name = this.name;
+            const surname = this.surname;
+            this.saveAdditionalData(user, email, name, surname);
+          })
+          .catch((error) => {
+            alert("Došlo je do pogreške", error);
+          });
+      },
+    },
+  };
 </script>
 
 <style>
