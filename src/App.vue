@@ -56,6 +56,8 @@
         >
           <router-link to="/SignUP" style="text-decoration: none;">SignUp</router-link>
         </v-btn>
+
+        <a href="#" @click.prevent="logout"></a>
       </div>
     </div>
     <router-view></router-view>
@@ -74,8 +76,9 @@
       group () {
         this.drawer = false
       },
-    },
-  }
+    }
+  };
+
 </script>
 
 <style lang="scss">

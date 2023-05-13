@@ -91,7 +91,6 @@
 <script>
 
 import {
-	doc,
 	auth,
 	db,
 	setDoc,
@@ -126,7 +125,7 @@ import {
 		},
 
     postActionMoveToView() {
-			this.$router.push({ path: "/" });
+			this.$router.replace({ path: "/" });
 		},
 
     async saveAdditionalData(user, email, name, surname) {

@@ -42,5 +42,4 @@ export { app, auth, storage,
   getDownloadURL,
   signOut,
   updatePassword
-
 }
