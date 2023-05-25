@@ -3,9 +3,7 @@
     <div class="grid-container">
       <div class="grid-item1">
 
-
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" style="color:white;"></v-app-bar-nav-icon>
-
 
     <v-navigation-drawer
       v-model="drawer"
@@ -18,20 +16,24 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item>
-            <router-link to="/" style="text-decoration: none;">Home</router-link>
+          <v-list-item to="/" class="btn_style">
+            Home
           </v-list-item>
-          <v-list-item>
-            <router-link to="/AboutUs" style="text-decoration: none;">About us</router-link>
+
+          <v-list-item to="/AboutUs" class="btn_style">
+            About us
           </v-list-item>
-          <v-list-item>
-            <router-link to="/KreirajLIGU" style="text-decoration: none;">Kreiraj ligu</router-link>
+
+          <v-list-item to="/KreirajLigu" class="btn_style">
+            Kreiraj ligu
           </v-list-item>
-          <v-list-item>
-            <router-link to="/KreirajKlub" style="text-decoration: none;">Kreiraj klub</router-link>
+
+          <v-list-item to="/KreirajKlub" class="btn_style">
+            Kreiraj klub
           </v-list-item>
-          <v-list-item>
-            <router-link to="/KreirajUtakmicu" style="text-decoration: none;">Kreiraj utakmicu</router-link>
+
+          <v-list-item to="/KreirajUtakmicu" class="btn_style">
+            Kreiraj utakmicu
           </v-list-item>
 
         </v-list-item-group>
@@ -44,20 +46,24 @@
       </div>
       <div class="grid-item2" style="text-align: right;">
         <v-btn
+          v-show="!isAuthenticated"
+          class="btn_style"
           elevation="2"
-          style="background-color: green;"
+          to="/Login"
         >
-          <router-link to="/LogIN" style="text-decoration: none;">LogIn</router-link>
+          LogIn
         </v-btn>
         |
         <v-btn
+        v-show="!isAuthenticated"
+        class="btn_style"
         elevation="2"
-        style="background-color: green;"
+        to="/Signup"
         >
-          <router-link to="/SignUP" style="text-decoration: none;">SignUp</router-link>
+          SignUp
         </v-btn>
 
-        <a href="#" @click.prevent="logout"></a>
+        <v-btn v-show="isAuthenticated" class="btn_style"><a href="#" @click.prevent="signOut" class="btn_style">LogOut</a></v-btn>
       </div>
     </div>
     <router-view></router-view>
@@ -66,17 +72,45 @@
 </template>
 
 <script>
+import { auth, getAuth, onAuthStateChanged, signOut } from "@/firebase";
   export default {
     data: () => ({
       drawer: false,
       group: null,
+      isAuthenticated: false,
+			isAuthorized: false,
     }),
 
     watch: {
       group () {
-        this.drawer = false
+        this.drawer = false;
       },
-    }
+    },
+
+    methods: {
+    signOut() {
+			const auth = getAuth();
+			signOut(auth)
+				.then(() => {
+					console.log("signed out");
+          this.$router.push({ path: "/Login" });
+				})
+				.catch((error) => {
+					// An error happened.
+				});
+    },
+  },
+    beforeCreate() {
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				console.log("Authenticated");
+				this.isAuthenticated = true;
+			} else {
+				console.log("Not Authenticated");
+				this.isAuthenticated = false;
+			}
+		});
+	},  
   };
 
 </script>
@@ -115,6 +149,13 @@
   .grid-item2
   {
     font-size: 30px;
+  }
+
+  .btn_style
+  {
+    background-color: green !important;
+    color: white !important;
+    font-weight: bold;
   }
 
 </style>

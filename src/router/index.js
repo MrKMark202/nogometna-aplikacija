@@ -1,6 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/Home.vue'
+import aboutUs from '../views/Aboutus.vue'
+import login from '../views/Login.vue'
+import signup from '../views/Signup.vue'
+import k_ligu from '../views/KreirajLIGU.vue'
+import k_klub from '../views/KreirajKLUB.vue'
+import k_tekmu from '../views/KreirajTEKMU.vue'
 
 Vue.use(VueRouter)
 
@@ -13,35 +19,32 @@ const routes = [
   {
     path: '/AboutUs',
     name: 'About us',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutUs.vue')
+    component: aboutUs
   },
   {
-    path: '/LogIN',
+    path: '/Login',
     name: 'LogIn',
-    component: () => import(/* webpackChunkName: "about" */ '../views/LogIN.vue')
+    component: login
   },
   {
-    path: '/SignUP',
+    path: '/Signup',
     name: 'SignUp',
-    component: () => import(/* webpackChunkName: "about" */ '../views/SignUP.vue')
+    component: signup
   },
   {
     path: '/KreirajLigu',
     name: 'KreirajLigu',
-    component: () => import(/* webpackChunkName: "about" */ '../views/KreirajLIGU.vue')
+    component: k_ligu
   },
   {
     path: '/KreirajKlub',
     name: 'KreirajKlub',
-    component: () => import(/* webpackChunkName: "about" */ '../views/KreirajKLUB.vue')
+    component: k_klub
   },
   {
     path: '/KreirajUtakmicu',
     name: 'KreirajUtakmicu',
-    component: () => import(/* webpackChunkName: "about" */ '../views/KreirajTEKMU.vue')
+    component: k_tekmu
   },
 ]
 
