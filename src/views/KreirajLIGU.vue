@@ -5,21 +5,67 @@
         </div>
     
         <div class="obrub">
-            <v-text-field label="Naziv Lige" variant="underlined"></v-text-field>
-            <v-text-field label="Godina osnivanja" variant="underlined"></v-text-field>
-            <v-text-field label="Država" variant="underlined"></v-text-field>
+            <v-text-field v-model="ligaName" label="Naziv Lige" variant="underlined"></v-text-field>
+            <v-text-field v-model="ligaYear" label="Godina osnivanja" variant="underlined"></v-text-field>
+            <v-text-field v-model="ligaCountry" label="Država" variant="underlined"></v-text-field>
 
             <v-file-input
                 label="Grb Lige"
-                 variant="filled"
+                variant="filled"
                 prepend-icon="mdi-camera"
             >
             </v-file-input>
 
-            <v-btn elevation="2" style="background-color: green; font-size: 30px; color: white; margin-top:40px; margin-left: 80%;">Kreiraj!</v-btn>
+            <v-btn @click="createLiga()" elevation="2" class="btn_style" style="margin-top:40px; margin-left: 80%;">Kreiraj!</v-btn>
         </div>
     </div>
 </template>
+
+<script>
+
+import {
+  db,
+  doc,
+  setDoc,
+  auth
+} from "@/firebase"
+
+
+export default {
+    name: "createLIGA",
+    data: () => ({
+        ligaName: null,
+        ligaYear: null,
+        ligaCountry: null,
+    }),
+
+    created() {},
+	mounted() {},
+	destroyed() {},
+
+    methods: {
+      clearFormData() {
+			  this.ligaName = null;
+			  this.ligaYear = null;
+			  this.ligaCountry = null;
+		},
+
+        async createLiga() {
+            await setDoc(
+            doc(db, "users", auth.currentUser.email, "lige", this.ligaName),
+                {
+                    ligaName: this.ligaName,
+                    ligaYear: this.ligaYear,
+                    ligaCountry: this.ligaCountry
+                }
+            );
+            this.clearFormData();
+        }
+    },
+}
+
+</script>
+
 
 <style>
 .obrub

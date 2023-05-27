@@ -1,7 +1,7 @@
 import firebase from 'firebase/compat/app'
 import { doc, addDoc, getDoc, setDoc, getDocs, getCount, getFirestore, collection } from 'firebase/firestore/lite'
 import { getAuth, updatePassword, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, confirmPasswordReset, beforeAuthStateChanged, onAuthStateChanged } from 'firebase/auth'
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 // Follow this pattern to import other Firebase services
 // import { } from 'firebase/<service>';
 
@@ -26,6 +26,7 @@ const auth = getAuth(app);
 const storage = getStorage(app);
 const db = getFirestore(app);
 
+
 export { app, auth, storage,
   getAuth,
 	db,
@@ -41,5 +42,6 @@ export { app, auth, storage,
   uploadBytes,
   getDownloadURL,
   signOut,
-  updatePassword
+  updatePassword,
+  collection
 }

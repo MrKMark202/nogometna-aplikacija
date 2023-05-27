@@ -91,6 +91,7 @@
 <script>
 
 import {
+  doc,
 	auth,
 	db,
 	setDoc,
@@ -99,8 +100,10 @@ import {
 
   export default {
     name: "SignUP",
+    components: {},
     data: () => ({
       agreement: false,
+      valid: true,
       name: null,
       surname: null,
       email: null,
@@ -116,12 +119,16 @@ import {
       },
     }),
 
+    created() {},
+	  mounted() {},
+	  destroyed() {},
+
     methods: {
       clearFormData() {
-			this.name = null;
-			this.surname = null;
-			this.email = null;
-			this.password = null;
+			  this.name = null;
+			  this.surname = null;
+			  this.email = null;
+			  this.password = null;
 		},
 
     postActionMoveToView() {
@@ -136,14 +143,19 @@ import {
 				AuthorisationType: "USER",
 			});
 		},
+    
       signup() {
-        createUserWithEmailAndPassword(auth, this.email,this.password)
-          .then((userCredital) =>{
+        const email = this.email;
+        const password = this.password;
+        createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) =>{
             alert("Uspješna registracija");
-            const user = userCredital.user;
+            const user = userCredential.user;
             const name = this.name;
             const surname = this.surname;
+            this.clearFormData();
             this.saveAdditionalData(user, email, name, surname);
+            this.postActionMoveToView();
           })
           .catch((error) => {
             alert("Došlo je do pogreške", error);

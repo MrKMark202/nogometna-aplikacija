@@ -63,6 +63,7 @@
           SignUp
         </v-btn>
 
+        <h3 v-show="isAuthenticated"></h3>
         <v-btn v-show="isAuthenticated" class="btn_style"><a href="#" @click.prevent="signOut" class="btn_style">LogOut</a></v-btn>
       </div>
     </div>
@@ -96,17 +97,17 @@ import { auth, getAuth, onAuthStateChanged, signOut } from "@/firebase";
           this.$router.push({ path: "/Login" });
 				})
 				.catch((error) => {
-					// An error happened.
+					console.error(error);
 				});
     },
   },
     beforeCreate() {
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
-				console.log("Authenticated");
+				console.log("Prijavljen");
 				this.isAuthenticated = true;
 			} else {
-				console.log("Not Authenticated");
+				console.log("Nema prijave");
 				this.isAuthenticated = false;
 			}
 		});
