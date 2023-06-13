@@ -7,6 +7,7 @@ import signup from '../views/Signup.vue'
 import k_ligu from '../views/KreirajLIGU.vue'
 import k_klub from '../views/KreirajKLUB.vue'
 import k_tekmu from '../views/KreirajTEKMU.vue'
+import passReset from '../views/passReset.vue'
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,11 @@ const routes = [
     path: '/KreirajUtakmicu',
     name: 'KreirajUtakmicu',
     component: k_tekmu
+  },
+  {
+    path: '/passReset',
+    name: 'Reset you password',
+    component: passReset
   },
 ]
 

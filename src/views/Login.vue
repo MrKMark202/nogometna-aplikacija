@@ -10,7 +10,7 @@
   style="max-width: 500px; margin-top: 80px; margin-left: auto; margin-right:auto; padding: 30px;"
 >
 
-<v-card-title> Još nisi napravio račun? <v-btn style="margin-left:10px;"> <router-link to="/SignUP" style="color:black; text-decoration: none;"> Registriraj se! </router-link></v-btn> </v-card-title>
+<v-card-title> Još nisi napravio račun? <v-btn to="/SignUP" style="margin-left:10px; color:black; text-decoration: none;"> Registriraj se! </v-btn> </v-card-title>
 
   <v-form
     ref="form"
@@ -42,15 +42,17 @@
   <v-card-actions>
 
     <v-btn
-			@click="openDialog"
 			class="link-left"
 			text
 			x-small
-			color="blue">
+			color="blue"
+      to="/passReset"
+      >
 			Zaboravili ste lozinku?
 			</v-btn>
 
     <v-spacer></v-spacer>
+
     <v-btn
       :disabled="!form"
       :loading="isLoading"
@@ -61,62 +63,20 @@
     >
       LogIN!
     </v-btn>
-  </v-card-actions>
+    </v-card-actions>
     </v-card>
-
-    <v-dialog
-					width="300px"
-					outlined
-					persistent
-					v-model="passwordIssuesDialog">
-					<v-card class="card-border">
-						<v-card-title>E-mail</v-card-title>
-						<v-card-subtitle>
-							Please enter you e-mail
-						</v-card-subtitle>
-						<v-card-text>
-							<v-text-field
-								v-model="emailForPassword"
-								dense
-								label="Email"
-								clearble
-								type="text"
-								:rules="[rules.required, rules.email]"
-								outlined></v-text-field>
-						</v-card-text>
-						<v-card-actions class="card-actions">
-							<v-btn
-								class="btn-right-margin"
-								color="red darken-3"
-								outlined
-								text
-								small
-								@click="closeDialog">
-								CLOSE
-							</v-btn>
-							<v-btn
-								outlined
-								text
-								@click="resetPassword(emailForPassword)">
-								SEND
-							</v-btn>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
-</div>
+  </div>
 </template>
 
 <script>
   import {
 	  auth,
-    sendPasswordResetEmail,
 	  signInWithEmailAndPassword,
   } from "@/firebase";
 
   export default {
     name: "LoginIN",
     data: () => ({
-      emailForPassword: null,
 			passwordIssuesDialog: false,
       agreement: false,
       email: null,
@@ -145,34 +105,10 @@
         });
       },
 
-      resetPassword(email) {
-			sendPasswordResetEmail(auth, email)
-				.then(() => {
-					console.log("Email je poslan");
-				})
-				.catch((error) => {
-					const errorCode = error.code;
-					const errorMessage = error.message;
-				});
-			this.closeDialog();
-		},
-
       postActionMoveToView() {
 			  this.$router.push({ path: "/" });
 		  },
-		  closeDialog() {
-			  this.passwordIssuesDialog = false;
-		  },
-		  openDialog() {
-			  this.passwordIssuesDialog = true;
-		  },
-
     },
-
-    created() {},
-	  mounted() {},
-	  destroyed() {},
-
   };
 
 </script>

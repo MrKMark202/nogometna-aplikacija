@@ -1,4 +1,4 @@
 export default {
     searchTerm: '',
-    currnetUser: '',
+    currentUser: '',
 };

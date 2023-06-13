@@ -9,13 +9,21 @@
             <v-text-field v-model="ligaYear" label="Godina osnivanja" variant="underlined"></v-text-field>
             <v-text-field v-model="ligaCountry" label="Država" variant="underlined"></v-text-field>
 
+
+            <input type="file" ref="myfile" />
+     
+     <v-btn class="ma-5" @click="UploadImageToStorage()"> Done</v-btn>
+            
             <v-file-input
                 label="Grb Lige"
                 variant="filled"
                 prepend-icon="mdi-camera"
+                v-model="url"
             >
             </v-file-input>
 
+
+            
             <v-btn @click="createLiga()" elevation="2" class="btn_style" style="margin-top:40px; margin-left: 80%;">Kreiraj!</v-btn>
         </div>
     </div>
@@ -27,9 +35,11 @@ import {
   db,
   doc,
   setDoc,
-  auth
+  auth,
+  ref,
+  storage,
+  uploadBytes 
 } from "@/firebase"
-
 
 export default {
     name: "createLIGA",
@@ -37,10 +47,13 @@ export default {
         ligaName: null,
         ligaYear: null,
         ligaCountry: null,
+        url: ""
     }),
 
     created() {},
-	mounted() {},
+	mounted() {
+        
+    },
 	destroyed() {},
 
     methods: {
@@ -49,10 +62,20 @@ export default {
 			  this.ligaYear = null;
 			  this.ligaCountry = null;
 		},
+        UploadImageToStorage() {
+
+      console.log("uplodaing...");
+      const storageRef = ref(storage, "Users/"+auth.currentUser.email+"/ProfilePicture/profile");
+      console.log(this.$refs.myfile.files);
+      uploadBytes(storageRef, this.$refs.myfile.files[0]).then(
+        console.log("done!")
+      );
+        },
+
 
         async createLiga() {
             await setDoc(
-            doc(db, "users", auth.currentUser.email, "lige", this.ligaName),
+            doc(db, "Users", auth.currentUser.email, "Lige", this.ligaName),
                 {
                     ligaName: this.ligaName,
                     ligaYear: this.ligaYear,
