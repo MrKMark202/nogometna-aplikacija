@@ -10,21 +10,15 @@
             <v-text-field v-model="ligaCountry" label="Država" variant="underlined"></v-text-field>
 
 
-            <input type="file" ref="myfile" />
-     
-     <v-btn class="ma-5" @click="UploadImageToStorage()"> Done</v-btn>
-            
-            <v-file-input
-                label="Grb Lige"
-                variant="filled"
-                prepend-icon="mdi-camera"
-                v-model="url"
-            >
-            </v-file-input>
+            <h3 class="grb">Grb Lige</h3>
 
-
-            
-            <v-btn @click="createLiga()" elevation="2" class="btn_style" style="margin-top:40px; margin-left: 80%;">Kreiraj!</v-btn>
+            <input 
+                class="butot" 
+                type="file" 
+                ref="myfile" 
+            />
+ 
+            <v-btn @click="createLiga(), UploadImageToStorage()" elevation="2" class="btn_style" style="margin-top:40px; margin-left: 85% !important;">Kreiraj!</v-btn>
         </div>
     </div>
 </template>
@@ -47,31 +41,23 @@ export default {
         ligaName: null,
         ligaYear: null,
         ligaCountry: null,
-        url: ""
     }),
-
-    created() {},
-	mounted() {
-        
-    },
-	destroyed() {},
 
     methods: {
       clearFormData() {
-			  this.ligaName = null;
-			  this.ligaYear = null;
-			  this.ligaCountry = null;
+			this.ligaName = null;
+			this.ligaYear = null;
+			this.ligaCountry = null;
 		},
+
         UploadImageToStorage() {
-
-      console.log("uplodaing...");
-      const storageRef = ref(storage, "Users/"+auth.currentUser.email+"/ProfilePicture/profile");
-      console.log(this.$refs.myfile.files);
-      uploadBytes(storageRef, this.$refs.myfile.files[0]).then(
-        console.log("done!")
-      );
+            console.log("uplodaing...");
+            const storageRef = ref(storage, "Users/"+auth.currentUser.email+"/LigaPicture/picture");
+            console.log(this.$refs.myfile.files);
+            uploadBytes(storageRef, this.$refs.myfile.files[0]).then(
+                console.log("done!")
+            );
         },
-
 
         async createLiga() {
             await setDoc(
@@ -96,8 +82,8 @@ export default {
     border: 2px solid white;
     background-color: white;
     padding: 50px;
-    margin-left: 20%;
-    margin-right: 20%;
+    margin-left: 25% !important;
+    margin-right: 25% !important;
     margin-top: 100px;
 
     
@@ -108,5 +94,21 @@ export default {
     font-size: 20px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-weight: bold;
+}
+
+.butot
+{
+    margin-top: 20px;
+    background-color: green;
+    color: black;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.grb
+{
+    margin-top: 20px;
+    color: black;
+    font-size: 30px;
 }
 </style>

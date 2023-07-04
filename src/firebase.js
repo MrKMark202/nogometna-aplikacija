@@ -1,5 +1,5 @@
 import firebase from 'firebase/compat/app'
-import { doc, addDoc, getDoc, setDoc, getDocs, getCount, getFirestore, collection } from 'firebase/firestore/lite'
+import { doc, addDoc, getDoc, setDoc, getDocs, getCount, getFirestore, collection, query, onSnapshot, where} from 'firebase/firestore/lite'
 import { getAuth, updatePassword, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, confirmPasswordReset, beforeAuthStateChanged, onAuthStateChanged } from 'firebase/auth'
 import { getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 // Follow this pattern to import other Firebase services
@@ -42,5 +42,9 @@ export { app, auth, storage, db,
   getDownloadURL,
   signOut,
   updatePassword,
-  collection
+  collection,
+  query,
+  getDocs,
+  onSnapshot,
+  where,
 }

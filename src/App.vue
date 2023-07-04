@@ -78,7 +78,7 @@ import {db , auth, getAuth,getDoc, onAuthStateChanged, signOut,doc} from "@/fire
       group: null,
       isAuthenticated: false,
 			isAuthorized: false,
-      mail: 'user'
+      mail: 'User not loged in!'
     }),
 
     watch: {

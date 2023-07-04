@@ -53,17 +53,9 @@
                         color="black"
                         depressed
                         @click="verifyPIN"
+                        style="font-weight: bold;"
                     >
-                    Check PIN!
-                    </v-btn>
-
-                    <v-btn
-                        class="white--text"
-                        color="black"
-                        depressed
-                        @click="resetPass"
-                    >
-                    Reset!
+                    Change Password!
                     </v-btn>
                 </v-card-actions>
             </v-form>
@@ -72,7 +64,7 @@
 </template>
     
 <script>
-import {auth, db, doc, getDoc, updatePassword } from "@/firebase";
+import {auth, db, doc, getDoc, updatePassword} from "@/firebase";
     export default {
         name: "passReset",
         data: () => ({   
@@ -92,36 +84,27 @@ import {auth, db, doc, getDoc, updatePassword } from "@/firebase";
         methods: {
             async verifyPIN() {
 
-                const userDoc = doc(db, 'Users', this.email);
-
-                try {
-                    const docSnapshot = await getDoc(userDoc);
-                    const savedPin = docSnapshot.data()["PIN"];
-
-                    if (this.pin === savedPin) {
-                        this.pinVerified = true;
-                        console.log('PIN verified.');
-                    } else {
-                        console.log('Invalid PIN.');
+                getDoc(doc(db, 'Users', this.email.toLowerCase())).then(docSnap => {
+                    if (docSnap.exists()) {
+                        console.log("Document data: ", docSnap.data()["PIN"]);
+                        const savedPin = docSnap.data()["PIN"]
+                        if (this.pin === savedPin) {
+                            this.pinVerified = true;
+                            console.log('PIN verified.');
+                            updatePassword(auth, this.newPassword);
+                            console.log('Data updated successfully.');
+                        }
+                        else {
+                            console.log('Invalid PIN.');
+                        }
+                    } 
+                    else {
+                        console.log("No such document!");
                     }
-                } catch (error) {
-                    console.error('Error retrieving user data:', error);
-                }
+                    });
+        	    },
         },
-            async resetPass(auth) {
-                try {
-                    const documentRef = doc(db, 'Users', this.email);
-                    const newData = {
-                
-            };
-            await updateDoc(documentRef, newData);
-            console.log('Data updated successfully.');
-            } catch (error) {
-            console.error('Error updating data:', error);
-            }
-        }
-    }
-};
+    };
 </script>
     
     <style>
