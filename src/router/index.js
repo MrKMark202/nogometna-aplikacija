@@ -8,6 +8,7 @@ import k_ligu from '../views/KreirajLIGU.vue'
 import k_klub from '../views/KreirajKLUB.vue'
 import k_tekmu from '../views/KreirajTEKMU.vue'
 import passReset from '../views/passReset.vue'
+import Table from '../views/Tablica.vue'
 
 Vue.use(VueRouter)
 
@@ -51,6 +52,11 @@ const routes = [
     path: '/passReset',
     name: 'Reset you password',
     component: passReset
+  },
+  {
+    path: '/Tablica',
+    name: 'Tablica',
+    component: Table
   },
 ]
 

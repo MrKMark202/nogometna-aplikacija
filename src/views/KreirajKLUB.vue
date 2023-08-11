@@ -14,7 +14,7 @@
                   <div>
                       <v-select
                         :items="ligas"
-                        label="Standard"
+                        label="Izaberite ligu za koju kreirate klub!"
                         v-model="selectedLiga"
                         class="vselect"
                       ></v-select>
@@ -31,7 +31,7 @@
                 ref="myfile" 
             />
 
-            <v-btn @click="createKlub()" elevation="2" style="background-color: green; color: white; margin-top:40px; margin-left: 85% !important;">Kreiraj!</v-btn>
+            <v-btn @click="createKlub(), createDataTable()" elevation="2" style="background-color: green; color: white; margin-top:40px; margin-left: 85% !important;">Kreiraj!</v-btn>
         </div>
     </div>
 </template>
@@ -77,16 +77,16 @@
 		  },
 
       UploadImageToStorage() {
-        console.log("uplodaing...");
+        console.log("Uplodaing...");
         const storageRef = ref(storage, "Users/"+auth.currentUser.email+"/ClubPicture/picture");
         console.log(this.$refs.myfile.files);
         uploadBytes(storageRef, this.$refs.myfile.files[0]).then(
-          console.log("done!")
+          console.log("Done!")
         );
       },   
 
-      createKlub() {
-        setDoc(
+      async createKlub() {
+        await setDoc(
           doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.clubName),
           {
             clubName: this.clubName,
@@ -95,7 +95,18 @@
           }
         );
           this.clearFormData();
-        }
+        },
+
+        async createDataTable() {
+          await setDoc(
+            doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.clubName, "Tablica lige", "Podaci"),
+            {
+              Bodovi: 0,
+              Postignutih_pogodaka: 0,
+              Primljenih_pogodaka: 0
+            }
+          )
+        },
       },
   };
 </script>

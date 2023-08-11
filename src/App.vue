@@ -35,6 +35,10 @@
               <v-list-item to="/KreirajUtakmicu" class="btn_style">
                 Kreiraj utakmicu
               </v-list-item>
+
+              <v-list-item to="/Tablica" class="btn_style">
+                Tablica
+              </v-list-item>
             </v-list-item-group>
           </v-list>
         </v-navigation-drawer>
@@ -103,7 +107,6 @@ import {db , auth, getAuth,getDoc, onAuthStateChanged, signOut,doc} from "@/fire
 				this.email = "User in not loged in"
 			}
 		});
-      this.getDocuments()
     },
 
     methods: {
@@ -118,10 +121,6 @@ import {db , auth, getAuth,getDoc, onAuthStateChanged, signOut,doc} from "@/fire
 					console.error(error);
 				});
     },
-
-    getDocuments(auth) {
-      console.log(auth);
-    }
 
   },
     beforeCreate() {

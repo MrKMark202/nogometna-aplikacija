@@ -72,10 +72,10 @@
                     <div>
                         <h2 style="font-size: 30px; margin-bottom: 10px;">Domaćin</h2>
                         <v-select
-                            :items="klubs"
+                            :items="klubs2"
                             label="Izaberi domaćina"
                             v-model="domacin"
-                            class="vselect"
+                            @change="domaciDohvat"
                         ></v-select>
                         <br><br>
                     </div>
@@ -97,10 +97,10 @@
                     <div>
                         <h2 style="font-size: 30px; margin-bottom: 10px;">Gosti</h2>
                         <v-select
-                            :items="klubs"
+                            :items="klubs3"
                             label="Izaberi goste"
                             v-model="gosti"
-                            class="vselect"
+                            @change="gostiDohvat"
                         ></v-select>
                         <br><br>
                     </div>
@@ -123,6 +123,8 @@ export default {
       gledateljiBroj: null,
       mjestoIgranja: null,
       klubs: [],
+      klubs2: [],
+      klubs3: [],
       domacin: '',
       gosti: '',
       ligas: [],
@@ -138,6 +140,7 @@ export default {
       domBod: 0,
       gosBod: 0,
       domacinData: [],
+      gostiData: [],
     }),
 
     mounted() {
@@ -156,25 +159,8 @@ export default {
         } else {
             console.log("User is not loged in");
         }
-
-
-        if (user) {
-            const table = collection(db, "Users", user.email, "Lige", this.selectedLiga, "Klubovi", this.domacin, "Tablica lige", "Podaci");
-            getDocs(table)
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                this.domacinData.push(doc.id);
-                console.log(this.domacinData);
-            });
-            })
-            .catch((error) => {
-            console.error("Error fetching subcollection documents:", error);
-            });
-        } else {
-            console.log("User is not loged in");
-        }
-		}); 
-    },
+        },
+    )},
 
    methods: {
       clearFormData() {
@@ -208,47 +194,76 @@ export default {
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                     this.klubs.push(doc.id);
+                    this.klubs2 = this.klubs;
                 });
             })
             this.clearKlubs();
         },
 
+        selectedHomeClub() {
+            this.klubs3 = this.klubs.filter((klub) => klub !== this.domacin);
+        },
+
+        selectedGuestClub() {
+            this.klubs2 = this.klubs.filter((klub) => klub !== this.gosti);
+        },
+
+        async domaciDohvat() {
+            this.domacinData = [];
+                const querySnapshot = await getDocs(collection(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.domacin, "Tablica lige"));
+                querySnapshot.forEach((doc) => {
+                this.domacinData.push(doc.data());
+            })
+
+            this.selectedHomeClub();
+        },
+
+        async gostiDohvat() {
+            this.gostiData = [];
+            const querySnapshot = await getDocs(collection(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.gosti, "Tablica lige"));
+            querySnapshot.forEach((doc) => {
+                this.gostiData.push(doc.data());
+            })
+            
+            this.selectedGuestClub();
+        },
+
         createTablicaDomacin() {
+            this.domBod = 0;
             if(this.domacinGol > this.gostiGol) {
-                this.domBod+=3;
-            }
-            else if(this.domacinGol < this.gostiGol) {
-                this.domBod+=0;
+                parseInt(this.domBod+=3);
             }
             else if(this.domacinGol == this.gostiGol) {
-                this.domBod+=1;
+                parseInt(this.domBod+=1);
             }
+
+
             setDoc(
                 doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.domacin, "Tablica lige", "Podaci"),
                 {
-                    Postignutih_pogodaka: this.domacinGol,
-                    Primljenih_pogodaka: this.gostiGol,
-                    bodovi: this.domBod,
+                    Bodovi: parseInt(this.domacinData[0].Bodovi) + parseInt(this.domBod),
+                    Postignutih_pogodaka: parseInt(this.domacinData[0].Postignutih_pogodaka) + parseInt(this.domacinGol),
+                    Primljenih_pogodaka: parseInt(this.domacinData[0].Primljenih_pogodaka) + parseInt(this.gostiGol)
+
                 }
             );
-            },
+        },
 
         createTablicaGosti() {
-            if(this.domacinGol < this.gostiGol) {
-            this.gosBod+=3;
-            }
-            else if(this.domacinGol > this.gostiGol) {
-                this.gosBod+=0;
+            this.gosBod = 0;
+            if(this.gostiGol > this.domacinGol) {
+                parseInt(this.gosBod+=3);
             }
             else if(this.domacinGol == this.gostiGol) {
-                this.gosBod+=1;
+                parseInt(this.gosBod+=1);
             }
+
             setDoc(
                 doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.gosti, "Tablica lige", "Podaci"),
                 {
-                    Postignutih_pogodaka: this.gostiGol,
-                    Primljenih_pogodaka: this.domacinGol,
-                    bodovi: this.gosBod,
+                    Bodovi: parseInt(this.gostiData[0].Bodovi) + parseInt(this.gosBod),
+                    Postignutih_pogodaka: parseInt(this.gostiData[0].Primljenih_pogodaka) + parseInt(this.gostiGol),
+                    Primljenih_pogodaka: parseInt(this.gostiData[0].Postignutih_pogodaka) + parseInt(this.domacinGol)
                 }
             );
         },
@@ -275,7 +290,6 @@ export default {
             this.createTablicaGosti();
             this.clearFormData();
         },
-
     },
 };
 

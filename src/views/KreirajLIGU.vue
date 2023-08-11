@@ -55,7 +55,7 @@ export default {
             const storageRef = ref(storage, "Users/"+auth.currentUser.email+"/LigaPicture/picture");
             console.log(this.$refs.myfile.files);
             uploadBytes(storageRef, this.$refs.myfile.files[0]).then(
-                console.log("done!")
+                console.log("Done!")
             );
         },
 
