@@ -1,24 +1,34 @@
 <template>
-     <div class="body1">
-    
-        <div class="o_nama">
-            <h1>O nama</h1>
-        </div>
 
-        <div class="paragrafi">
-             <p>
-                 Ovo je web aplikacija koja vam omogućava kreiranje raznih klubova i liga, razne utakmice koje su se dogodile, te obrada sveukupnog rezultata.
-                 Kreirate ligu, klubove u toj ligi, te utakmice i na kraju upisa svih traženih podataka za utakmicu će se obraditi konačni rezultat.
-                 Ukoliko pogresite u pravljenju lige, kluba ili utakmice, imate mogućnost brisanja istoga.
-             </p>
-        </div>
+  <div class="body1">
+    <div class="o_nama">
+      <h1>O nama</h1>
+    </div>
 
-      </div>
+    <div class="paragrafi">
+      <p>
+        Ovo je web aplikacija koja vam omogućava kreiranje raznih klubova i liga, razne utakmice koje su se dogodile, te obrada sveukupnog rezultata.
+        Kreirate ligu, klubove u toj ligi, te utakmice i na kraju upisa svih traženih podataka za utakmicu će se obraditi konačni rezultat.
+        Ukoliko pogresite u pravljenju lige, kluba ili utakmice, imate mogućnost brisanja istoga.
+      </p>
+    </div>
+  </div>
+  
 </template>
+
+<script>
+import HelloWorld from '@/components/HelloWorld.vue'
+
+export default {
+  name: 'AboutUs',
+  components: {
+    HelloWorld
+  }
+}
+</script>
 
 
 <style>
-
   .o_nama
   {
     margin-top: 100px;
@@ -39,18 +49,4 @@
     text-align: center;
     font-size: 30px;
   }
-
 </style>
-
-
-<script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
-export default {
-  name: 'AboutUs',
-  components: {
-    HelloWorld
-  }
-}
-</script>

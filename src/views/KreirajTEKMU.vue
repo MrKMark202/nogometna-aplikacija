@@ -56,10 +56,10 @@
 
             <div>
                 <v-select
-                    @change="change"
-                    :items="ligas"
+                    @change="dohvatKlubova()"
+                    :items="lige"
                     label="Izaberite ligu za koju je utakmica namijenjena!"
-                    v-model="selectedLiga"
+                    v-model="izabranaLiga"
                     class="vselect"
                 ></v-select>
                 <br><br>
@@ -127,8 +127,8 @@ export default {
       klubs3: [],
       domacin: '',
       gosti: '',
-      ligas: [],
-      selectedLiga: '',
+      lige: [],
+      izabranaLiga: '',
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       menu: false,
       modal: false,
@@ -150,7 +150,7 @@ export default {
             getDocs(colRef)
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
-                this.ligas.push(doc.id);
+                this.lige.push(doc.id);
             });
             })
             .catch((error) => {
@@ -172,15 +172,11 @@ export default {
             this.gledateljiBroj = null;
             this.domacin = '';
             this.gosti = '';
-            this.selectedLiga = '';
+            this.izabranaLiga = '';
             this.date = null;
 		},
 
-        clearKlubs() {
-            this.klubs = [];
-        },
-
-        currentDate() {
+        trenutniDatum() {
             const current = new Date();
             this.godina = "GODINA " + `${current.getFullYear()}`;
             this.mjesec = "MJESEC " + `${current.getMonth()+1}`;
@@ -188,8 +184,8 @@ export default {
             this.satUpisa = `${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`;
         },
 
-        change() {
-            const colRef = collection(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi");
+        dohvatKlubova() {
+            const colRef = collection(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Klubovi");
             getDocs(colRef)
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
@@ -197,35 +193,37 @@ export default {
                     this.klubs2 = this.klubs;
                 });
             })
-            this.clearKlubs();
+            this.klubs = [];
         },
 
-        selectedHomeClub() {
+        izabraniDomaciTim() {
             this.klubs3 = this.klubs.filter((klub) => klub !== this.domacin);
         },
 
-        selectedGuestClub() {
+        izabraniGostujuciTim() {
             this.klubs2 = this.klubs.filter((klub) => klub !== this.gosti);
         },
 
         async domaciDohvat() {
             this.domacinData = [];
-                const querySnapshot = await getDocs(collection(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.domacin, "Tablica lige"));
+                const querySnapshot = await getDocs(collection(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Klubovi", this.domacin, "Tablica lige"));
                 querySnapshot.forEach((doc) => {
                 this.domacinData.push(doc.data());
+                console.log(this.domacinData);
             })
 
-            this.selectedHomeClub();
+            this.izabraniDomaciTim();
         },
 
         async gostiDohvat() {
             this.gostiData = [];
-            const querySnapshot = await getDocs(collection(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.gosti, "Tablica lige"));
+            const querySnapshot = await getDocs(collection(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Klubovi", this.gosti, "Tablica lige"));
             querySnapshot.forEach((doc) => {
                 this.gostiData.push(doc.data());
+                console.log(this.gostiData);
             })
             
-            this.selectedGuestClub();
+            this.izabraniGostujuciTim();
         },
 
         createTablicaDomacin() {
@@ -239,7 +237,7 @@ export default {
 
 
             setDoc(
-                doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.domacin, "Tablica lige", "Podaci"),
+                doc(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Klubovi", this.domacin, "Tablica lige", "Podaci"),
                 {
                     Bodovi: parseInt(this.domacinData[0].Bodovi) + parseInt(this.domBod),
                     Postignutih_pogodaka: parseInt(this.domacinData[0].Postignutih_pogodaka) + parseInt(this.domacinGol),
@@ -259,25 +257,25 @@ export default {
             }
 
             setDoc(
-                doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.gosti, "Tablica lige", "Podaci"),
+                doc(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Klubovi", this.gosti, "Tablica lige", "Podaci"),
                 {
                     Bodovi: parseInt(this.gostiData[0].Bodovi) + parseInt(this.gosBod),
-                    Postignutih_pogodaka: parseInt(this.gostiData[0].Primljenih_pogodaka) + parseInt(this.gostiGol),
-                    Primljenih_pogodaka: parseInt(this.gostiData[0].Postignutih_pogodaka) + parseInt(this.domacinGol)
+                    Postignutih_pogodaka: parseInt(this.gostiData[0].Postignutih_pogodaka) + parseInt(this.gostiGol),
+                    Primljenih_pogodaka: parseInt(this.gostiData[0].Primljenih_pogodaka) + parseInt(this.domacinGol)
                 }
             );
         },
 
         createTekma() {
-            this.currentDate();
+            this.trenutniDatum();
             setDoc(
-            doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Utakmice", this.godina, this.mjesec, this.dan, "KOLO " + this.kolo, this.satUpisa),
+            doc(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Utakmice", this.godina, this.mjesec, this.dan, "KOLO " + this.kolo, this.satUpisa),
             {
                 Kolo: this.kolo,
                 stadionName: this.stadionName,
                 gledateljiBroj: this.gledateljiBroj,
                 datumTekme: this.date,
-                Liga: this.selectedLiga,
+                Liga: this.izabranaLiga,
                 Domaćin: this.domacin,
                 domacinGol: this.domacinGol,
                 gostiGol: this.gostiGol,
@@ -292,70 +290,68 @@ export default {
         },
     },
 };
-
 </script>
 
 <style>
-.obrub1
-{
-    border: 2px solid white;
-    background-color: white;
-    padding: 50px;
-    margin-left: 200px;
-    margin-right: 200px;
-    margin-top: 100px;
-    margin-bottom: 100px;
-}
+    .obrub1
+    {
+        border: 2px solid white;
+        background-color: white;
+        padding: 50px;
+        margin-left: 200px;
+        margin-right: 200px;
+        margin-top: 100px;
+        margin-bottom: 100px;
+    }
 
-.v-text-field
-{
-    font-size: 30px;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    .v-text-field
+    {
+        font-size: 30px;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-.gol
-{
-    width: 80px;
-    height: 100px;
-    border: 2px solid black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 50px !important;
-    margin-right: 50px !important;
-}
+    .gol
+    {
+        width: 80px;
+        height: 100px;
+        border: 2px solid black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 50px !important;
+        margin-right: 50px !important;
+    }
 
-.goll
-{
-    width: 80%;
-    height: 100%;
-    text-align: center;
-    font-size: 60px;
-    border: none;
-    outline: none;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
+    .goll
+    {
+        width: 80%;
+        height: 100%;
+        text-align: center;
+        font-size: 60px;
+        border: none;
+        outline: none;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
 
-.row
-{
-    color: black;
-    text-align: center;
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    .row
+    {
+        color: black;
+        text-align: center;
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-.select
-{
-    font-size: 40px; 
-    text-align: center;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    border: 2px solid black;
-}
-
+    .select
+    {
+        font-size: 40px; 
+        text-align: center;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        border: 2px solid black;
+    }
 </style>

@@ -1,13 +1,13 @@
 <template>
 
-    <div>
-        <div class="naslov1">
-            <h1>SignUp</h1>
-        </div>
+    <div data-app>
+      <div class="naslov1">
+        <h1>SignUp</h1>
+      </div>
 
     <v-card
       class="mx-auto"
-      style="max-width: 500px; margin-top: 80px; margin-left: 14%; padding: 30px;"
+      style="max-width: 800px; margin-top: 80px; margin-left: auto; margin-right:auto; padding: 30px;"
     >
 
     <v-card-title> Imaš li već račun? <v-btn to="/LogIn" style="margin-left:10px; color:black; text-decoration: none;"> Prijavi se! </v-btn> </v-card-title>
@@ -17,7 +17,7 @@
       <v-text-field
           v-model="name"
           filled
-          label="Name"
+          label="Ime"
           style="min-height: 100px;"
           :rules="[rules.required]"
           type="text"
@@ -27,30 +27,57 @@
           v-model="surname"
           filled
           color="black"
-          label="Surname"
+          label="Prezime"
           style="min-height: 100px"
           :rules="[rules.required]"
           type="text"
         ></v-text-field>
 
-        <h5>Date format: DD/MM/YYYY</h5>
-
-        <v-text-field
-          v-model="birthDate"
-          filled
-          color="black"
-          label="Your birth date"
-          style="min-height: 100px"
-          :rules="[rules.required]"
-          type="text"
-        ></v-text-field>
+        <v-dialog
+          ref="dialog"
+          v-model="modal"
+          :return-value.sync="date"
+          persistent
+          width="290px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-model="date"
+              label="Odaberite datum rođenja"
+              prepend-icon="mdi-calendar"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker
+            v-model="date"
+            scrollable
+          >
+            <v-spacer></v-spacer>
+            <v-btn
+              text
+              color="primary"
+              @click="modal = false"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              text
+              color="primary"
+              @click="$refs.dialog.save(date)"
+            >
+              OK
+            </v-btn>
+          </v-date-picker>
+        </v-dialog>
 
       <v-text-field
           v-model="email"
           :rules="[rules.email, rules.required]"
           filled
           color="black"
-          label="Email address"
+          label="Email adresa"
           style="min-height: 100px"
           type="email"
         ></v-text-field>
@@ -61,13 +88,13 @@
           filled
           color="black"
           counter="6"
-          label="Password"
+          label="Lozinka"
           style="min-height: 100px"
           type="password"
         ></v-text-field>
 
-        <h5>PIN will be used as checkmark for reseting your password if you forgot it</h5>
-        <h5>Minimum of 4 numbers!</h5>
+        <h5>PIN će se koristi za potvrdu vašeg e-maila u slučaju ako zaboravite lozinku!</h5>
+        <h5>Minimalno 4 broja!</h5>
 
         <v-text-field
           type="password"
@@ -79,6 +106,13 @@
           :rules="[rules.length(4), rules.required]"
           counter="4"
         ></v-text-field>
+
+        <input 
+          :rules="[rules.required]"
+          class="butot" 
+          type="file" 
+          ref="PictureFile" 
+          />
 
         <v-checkbox
           v-model="agreement"
@@ -104,10 +138,9 @@
           type="button"
           :disabled="!form"
           :loading="isLoading"
-          class="white--text"
-          color="black"
+          class="butot"
           depressed
-          @click="signup"
+          @click="UploadImageToStorage()"
         >
           SignUP!
         </v-btn>
@@ -119,13 +152,7 @@
 
 <script>
 
-import {
-  doc,
-	auth,
-	db,
-	setDoc,
-	createUserWithEmailAndPassword,
-} from "@/firebase"
+import {doc, auth, db, setDoc, createUserWithEmailAndPassword, ref, getDownloadURL, storage, uploadBytes} from "@/firebase";
 
   export default {
     name: "SignUP",
@@ -136,11 +163,15 @@ import {
       name: null,
       surname: null,
       email: null,
+      profilnaURL: '',
       form: false,
       isLoading: false,
       password: null,
-      birthDate: null,
       pin: '',
+      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      menu: false,
+      modal: false,
+      menu2: false,
       rules: {
         email: v => !!(v || '').match(/@/) || 'Please enter a valid email',
         length: len => v => (v || '').length >= len || `Invalid character length, required ${len}`,
@@ -158,19 +189,38 @@ import {
 			  this.password = null;
         this.birthDate = null;
         this.pin = null;
+        this.date = null;
 		},
 
     postActionMoveToView() {
 			this.$router.replace({ path: "/" });
 		},
 
-    async saveAdditionalData(user, email, name, surname, birthDate, pin) {
+    async UploadImageToStorage() {
+        const storageRef = ref(storage, "Users/" + this.email + "/Profilna Slika/" + "Profilna");
+
+        await uploadBytes(storageRef, this.$refs.PictureFile.files[0]).then((snapshot) => {
+        console.log("Upload complete!");
+
+          getDownloadURL(snapshot.ref).then((url) => {
+            this.profilnaURL = url;
+            this.signup();
+          }).catch((error) => {
+            console.error("Error getting download URL:", error);
+          });
+        }).catch((error) => {
+          console.error("Error uploading image:", error);
+        });
+    },  
+
+    async saveAdditionalData(user, email, name, surname, birthDate, pin, profilna) {
 			await setDoc(doc(db, "Users", email.toLowerCase()), {
 				Email: email,
 				Name: name,
 				Surname: surname,
         Birthdate: birthDate,
         PIN: pin,
+        Profilna: profilna,
 				AuthorisationType: "USER",
 			});
 		},
@@ -181,48 +231,42 @@ import {
         createUserWithEmailAndPassword(auth, email, password)
           .then((userCredential) =>{
             alert("Uspješna registracija");
+            console.log(userCredential);
             const user = userCredential.user;
             const name = this.name;
             const surname = this.surname;
-            const birthDate = this.birthDate;
+            const birthDate = this.date;
             const pin = this.pin;
+            const profilna = this.profilnaURL;
+            this.saveAdditionalData(user, email, name, surname, birthDate, pin, profilna);
             this.clearFormData();
-            this.saveAdditionalData(user, email, name, surname, birthDate, pin);
             this.postActionMoveToView();
           })
           .catch((error) => {
             alert("Došlo je do pogreške", error);
           });
       },
-      
-      filterNonNumeric(event) {
-        if (
-        event.key === 'ArrowLeft' ||
-        event.key === 'ArrowRight' ||
-        event.key === 'Backspace' ||
-        event.key === 'Delete' ||
-        event.key === 'Tab'
-      ) {
-        return;
-      }
-
-      // Prevent non-numeric characters
-      if (!/^\d+$/.test(event.key)) {
-        event.preventDefault();
-      }
-    }
   },
 };
 </script>
 
 <style>
-.naslov1
+  .obrub1
+  {
+    border: 2px solid white;
+    background-color: white;
+    padding: 50px;
+    margin-left: 200px;
+    margin-right: 200px;
+    margin-top: 100px;
+    margin-bottom: 100px;
+  }
+
+  .naslov1
   {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    padding-left: 15%;
+    text-align: center;
     color: white;
     margin-top:120px;
   }
-
-  
 </style>

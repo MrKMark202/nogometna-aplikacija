@@ -1,28 +1,35 @@
 <template>
+  <div>
+    <div class="naslov">
+      <h1>Nogometna Aplikacija</h1>
+    </div>
 
-    <div>
-          <div class="naslov">
-            <h1>Nogometna Aplikacija</h1>
-          </div>
-
-          <div class="podnaslovne_stvari">
-             <h2 style="text-align: center;">Kreirajte vlastitu ligu i timove </h2>
-             <h2 style="text-align: center;">Najvažnije, zabavite se!</h2>
-            </div>  
-        </div>
-
+    <div class="podnaslovne_stvari">
+      <h2 style="text-align: center;">Kreirajte vlastitu ligu i timove </h2>
+      <h2 style="text-align: center;">Najvažnije, zabavite se!</h2>
+      </div>  
+  </div>
 </template>
 
+<script>
+  import HelloWorld from '@/components/HelloWorld.vue'
+
+  export default {
+    name: 'Home',
+    components: {
+      HelloWorld
+    }
+  }
+</script>
 
 <style>
-
-body
-  {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0.20)), url(https://studentski.hr/system/pictures/images/5/original/3a55c38d6c18374ba244590a2117d169dc09d0d7.jpg?1440585212); 
-  background-size: cover; 
-  z-index: -1;
-  color: white;
-  }
+  body
+    {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0.20)), url(https://studentski.hr/system/pictures/images/5/original/3a55c38d6c18374ba244590a2117d169dc09d0d7.jpg?1440585212); 
+    background-size: cover; 
+    z-index: -1;
+    color: white;
+    }
 
   .naslov
   {
@@ -48,16 +55,4 @@ body
   {
     font-size: 80px;
   }
-
 </style>
-
-<script>
-  import HelloWorld from '@/components/HelloWorld.vue'
-
-  export default {
-    name: 'Home',
-    components: {
-      HelloWorld
-    }
-  }
-</script>

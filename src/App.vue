@@ -24,26 +24,26 @@
                 About us
               </v-list-item>
 
-              <v-list-item to="/KreirajLigu" class="btn_style">
+              <v-list-item v-show="isAuthenticated" to="/KreirajLigu" class="btn_style">
                 Kreiraj ligu
               </v-list-item>
 
-              <v-list-item to="/KreirajKlub" class="btn_style">
+              <v-list-item v-show="isAuthenticated" to="/KreirajKlub" class="btn_style">
                 Kreiraj klub
               </v-list-item>
 
-              <v-list-item to="/KreirajUtakmicu" class="btn_style">
+              <v-list-item v-show="isAuthenticated" to="/KreirajUtakmicu" class="btn_style">
                 Kreiraj utakmicu
               </v-list-item>
 
-              <v-list-item to="/Tablica" class="btn_style">
+              <v-list-item v-show="isAuthenticated" to="/Tablica" class="btn_style">
                 Tablica
               </v-list-item>
             </v-list-item-group>
           </v-list>
         </v-navigation-drawer>
       </div>
-      <div class="grid-item2" style="text-align: right">
+      <div style="text-align: right; font-size: 30px !important;">
         <v-btn
           v-show="!isAuthenticated"
           class="btn_style"
@@ -61,11 +61,10 @@
         >
           SignUp
         </v-btn>
-        <p v-show="isAuthenticated">
+        <p v-show="isAuthenticated" class="p">
+          <img v-show="isAuthenticated" class="profilna" :src="profilePicture">
           {{ mail }} |
-          <v-btn href="#" @click.prevent="signOut()" class="btn_style"
-            >LogOut</v-btn
-          >
+          <v-btn v-show="isAuthenticated" href="#" @click.prevent="signOut()" class="btn_style">LogOut</v-btn>
         </p>
       </div>
     </div>
@@ -82,7 +81,8 @@ import {db , auth, getAuth,getDoc, onAuthStateChanged, signOut,doc} from "@/fire
       group: null,
       isAuthenticated: false,
 			isAuthorized: false,
-      mail: 'User not loged in!'
+      mail: 'User not loged in!',
+      profilePicture: null
     }),
 
     watch: {
@@ -96,8 +96,9 @@ import {db , auth, getAuth,getDoc, onAuthStateChanged, signOut,doc} from "@/fire
 			if (user) {
         getDoc(doc(db, "Users", user.email)).then(docSnap => {
           if (docSnap.exists()) {
-            console.log("Document data: ", docSnap.data()["Email"]);
-            this.mail = docSnap.data()["Email"]
+            console.log("Document data: ", docSnap.data()["Email", "Profilna"]);
+            this.mail = docSnap.data()["Email"];
+            this.profilePicture = docSnap.data()["Profilna"]
           } else {
             console.log("No such document!");
           }
@@ -138,40 +139,44 @@ import {db , auth, getAuth,getDoc, onAuthStateChanged, signOut,doc} from "@/fire
   };
 </script>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  color: #2c3e50;
-}
-
-a {
-  font-weight: bold;
-  color: white;
-
-  &.router-link-exact-active {
-    color: rgb(159, 255, 140);
+<style scoped lang="scss">
+  #app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: #2c3e50;
   }
-}
 
-.grid-container {
-  display: grid;
-  grid-template-columns: auto auto;
-  padding: 20px;
-  background-color: rgb(7, 45, 7);
-}
+  .grid-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 20px;
+    background-color: rgb(7, 45, 7);
+  }
 
-.grid-item1 {
-  font-size: 30px;
-}
+  .grid-item1 {
+    font-size: 30px;
+  }
 
-.grid-item2 {
-  font-size: 30px;
-}
+  .btn_style {
+    background-color: green !important;
+    color: white !important;
+    font-weight: bold;
+    margin-left: 10px;
+  }
 
-.btn_style {
-  background-color: green !important;
-  color: white !important;
-  font-weight: bold;
-}
+  .profilna
+  {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #007bff; 
+    margin-right: 10px;
+  }
+
+  .p
+  {
+    display:inline-flex;
+    color: white;
+    align-items: center;
+  };
 </style>

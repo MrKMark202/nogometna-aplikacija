@@ -5,14 +5,16 @@
         </div>
     
         <div class="obrub" data-app>
-            <v-text-field v-model="clubName" label="Naziv kluba" variant="underlined"></v-text-field>
-            <v-text-field v-model="clubYear" label="Godina osnivanja" variant="underlined"></v-text-field>
-            <v-text-field v-model="clubCountry" label="Država" variant="underlined"></v-text-field>
+          <v-form ref="form" v-model="form" style="margin-top: 20px;">
+            <v-text-field v-model="clubName" label="Naziv kluba" variant="underlined" :rules="[rules.required]"></v-text-field>
+            <v-text-field v-model="clubYear" label="Godina osnivanja" variant="underlined" :rules="[rules.required]"></v-text-field>
+            <v-text-field v-model="clubCountry" label="Država" variant="underlined" :rules="[rules.required]"></v-text-field>
 
             <v-row class="row2">
               <v-col>
                   <div>
                       <v-select
+                        :rules="[rules.required]"
                         :items="ligas"
                         label="Izaberite ligu za koju kreirate klub!"
                         v-model="selectedLiga"
@@ -22,22 +24,27 @@
                   </div>
               </v-col>
             </v-row>
-
+          </v-form>
             <h3 class="grb">Grb Kluba</h3>
 
             <input 
-                class="butot" 
-                type="file" 
-                ref="myfile" 
+              class="butot" 
+              type="file" 
+              ref="ligaPictureFile" 
             />
 
-            <v-btn @click="createKlub(), createDataTable()" elevation="2" style="background-color: green; color: white; margin-top:40px; margin-left: 85% !important;">Kreiraj!</v-btn>
+            <v-btn 
+              @click="UploadLigaImageToStorage()" 
+              elevation="2" 
+              :disabled="!form"
+              :loading="isLoading"
+              style="background-color: green; color: white; margin-top:40px; margin-left: 85% !important;">Kreiraj!</v-btn>
         </div>
     </div>
 </template>
 
 <script>
-  import {db, auth, collection, getDocs, setDoc, doc, ref, uploadBytes, storage, onAuthStateChanged} from '@/firebase';
+  import {db, auth, collection, getDocs, setDoc, doc, ref, uploadBytes, storage, onAuthStateChanged, getDownloadURL} from '@/firebase';
 
   export default {
     name: "CreateClub",
@@ -47,6 +54,12 @@
       clubYear: null,
       ligas: [],
       selectedLiga: '',
+      KlubPictureURL: '',
+      form: false,
+      isLoading: false,
+      rules: {
+        required: v => !!v || 'This field is required'
+      },
     }),
 
    mounted() {
@@ -76,14 +89,23 @@
         this.selectedLiga = '';
 		  },
 
-      UploadImageToStorage() {
-        console.log("Uplodaing...");
-        const storageRef = ref(storage, "Users/"+auth.currentUser.email+"/ClubPicture/picture");
-        console.log(this.$refs.myfile.files);
-        uploadBytes(storageRef, this.$refs.myfile.files[0]).then(
-          console.log("Done!")
-        );
-      },   
+      async UploadLigaImageToStorage() {
+        const storageRef = ref(storage, "Users/" + auth.currentUser.email + "/KlubPicture " + this.clubName);
+
+        await uploadBytes(storageRef, this.$refs.ligaPictureFile.files[0]).then((snapshot) => {
+        console.log("Upload complete!");
+
+          getDownloadURL(snapshot.ref).then((url) => {
+            this.KlubPictureURL = url;
+            this.createKlub();
+            this.createDataTable()
+          }).catch((error) => {
+            console.error("Error getting download URL:", error);
+          });
+        }).catch((error) => {
+          console.error("Error uploading image:", error);
+        });
+      },  
 
       async createKlub() {
         await setDoc(
@@ -91,10 +113,10 @@
           {
             clubName: this.clubName,
             clubYear: this.clubYear,
-            clubCountry: this.clubCountry
+            clubCountry: this.clubCountry,
+            imageURL: this.KlubPictureURL
           }
         );
-          this.clearFormData();
         },
 
         async createDataTable() {
@@ -103,9 +125,11 @@
             {
               Bodovi: 0,
               Postignutih_pogodaka: 0,
-              Primljenih_pogodaka: 0
+              Primljenih_pogodaka: 0,
+              imageURL: this.KlubPictureURL
             }
           )
+          this.clearFormData();
         },
       },
   };
