@@ -5,6 +5,7 @@
         <v-app-bar-nav-icon
           @click.stop="drawer = !drawer"
           style="color: white"
+          v-show="isAuthenticated"
         ></v-app-bar-nav-icon>
 
         <v-navigation-drawer
@@ -38,6 +39,10 @@
 
               <v-list-item v-show="isAuthenticated" to="/Tablica" class="btn_style">
                 Tablica
+              </v-list-item>
+
+              <v-list-item v-show="isAuthenticated" to="/TekmaPodaci" class="btn_style">
+                Pregled utakmica
               </v-list-item>
             </v-list-item-group>
           </v-list>

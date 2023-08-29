@@ -93,20 +93,6 @@
           type="password"
         ></v-text-field>
 
-        <h5>PIN će se koristi za potvrdu vašeg e-maila u slučaju ako zaboravite lozinku!</h5>
-        <h5>Minimalno 4 broja!</h5>
-
-        <v-text-field
-          type="password"
-          v-model="pin"
-          filled
-          color="black"
-          label="Insert your PIN"
-          style="min-height: 100px"
-          :rules="[rules.length(4), rules.required]"
-          counter="4"
-        ></v-text-field>
-
         <input 
           :rules="[rules.required]"
           class="butot" 
@@ -167,7 +153,6 @@ import {doc, auth, db, setDoc, createUserWithEmailAndPassword, ref, getDownloadU
       form: false,
       isLoading: false,
       password: null,
-      pin: '',
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       menu: false,
       modal: false,
@@ -188,7 +173,6 @@ import {doc, auth, db, setDoc, createUserWithEmailAndPassword, ref, getDownloadU
 			  this.email = null;
 			  this.password = null;
         this.birthDate = null;
-        this.pin = null;
         this.date = null;
 		},
 
@@ -213,13 +197,12 @@ import {doc, auth, db, setDoc, createUserWithEmailAndPassword, ref, getDownloadU
         });
     },  
 
-    async saveAdditionalData(user, email, name, surname, birthDate, pin, profilna) {
+    async saveAdditionalData(user, email, name, surname, birthDate, profilna) {
 			await setDoc(doc(db, "Users", email.toLowerCase()), {
 				Email: email,
 				Name: name,
 				Surname: surname,
         Birthdate: birthDate,
-        PIN: pin,
         Profilna: profilna,
 				AuthorisationType: "USER",
 			});
@@ -236,9 +219,8 @@ import {doc, auth, db, setDoc, createUserWithEmailAndPassword, ref, getDownloadU
             const name = this.name;
             const surname = this.surname;
             const birthDate = this.date;
-            const pin = this.pin;
             const profilna = this.profilnaURL;
-            this.saveAdditionalData(user, email, name, surname, birthDate, pin, profilna);
+            this.saveAdditionalData(user, email, name, surname, birthDate, profilna);
             this.clearFormData();
             this.postActionMoveToView();
           })

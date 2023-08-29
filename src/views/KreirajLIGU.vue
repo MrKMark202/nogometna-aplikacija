@@ -55,7 +55,8 @@
             },
 
             async UploadLigaImageToStorage() {
-                const storageRef = ref(storage, "Users/" + auth.currentUser.email + "/LigaPicture" + this.ligaName);
+                if (this.$refs.ligaPictureFile.files[0]) {
+                const storageRef = ref(storage, "Users/" + auth.currentUser.email + "/LigaPicture/" + this.ligaName);
 
                 await uploadBytes(storageRef, this.$refs.ligaPictureFile.files[0]).then((snapshot) => {
                     console.log("Upload complete!");
@@ -69,6 +70,11 @@
                     }).catch((error) => {
                         console.error("Error uploading image:", error);
                     });
+                }
+                else if (!this.$refs.ligaPictureFile.files[0]) {
+                    this.LigaPictureURL = 'https://firebasestorage.googleapis.com/v0/b/nogometna--aplikacija.appspot.com/o/Users%2Fmk%40gmail.com%2FLigaPicture%2Funknown_league.png?alt=media&token=dac10b95-49a6-47b8-b930-574ecaa60988';
+                    this.createLiga();
+                }
             },
 
             async createLiga() {

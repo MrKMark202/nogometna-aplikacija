@@ -3,7 +3,7 @@
       <div data-app class="obrub1">
         <v-row >
           <v-col cols="2" v-if="selectedImageURL">
-            <v-img :src="selectedImageURL" v-if="selectedImageURL" class="image-box"></v-img>
+            <v-img :src="selectedImageURL" class="image-box"></v-img>
           </v-col>
           
           <v-col cols="4" >
@@ -76,7 +76,6 @@
         selectedKlub: '',
         search: '',
         selectedImageURL: '',
-        defaultImgURL: 'https://cdn.discordapp.com/attachments/913822641645813772/1143515689399881758/unknown_klub.png',
         headers: [
             { text: 'Pozicija', value: 'pz'},
             { text: 'Grb', value: 'grb'},
@@ -85,6 +84,7 @@
                 align: 'start',
                 value: 'nt',
             },
+            { text: 'Odigranij dvoboja', value: 'od' },
             { text: 'Postignuti pogodci', value: 'pp' },
             { text: 'Primljeni golovi', value: 'pg' },
             { text: 'Gol razlika', value: 'gr'},
@@ -132,7 +132,7 @@
         if (selectedLigaData && selectedLigaData.data.imageURL) {
           this.selectedImageURL = selectedLigaData.data.imageURL;
         } else {
-          this.selectedImageURL = "https://cdn.discordapp.com/attachments/913822641645813772/1144032009061142618/unknown_league.png";
+          this.selectedImageURL = "";
         }
       } else {
         this.selectedImageURL = '';
@@ -170,12 +170,13 @@
         sortedDatas.sort((a, b) => {
           return b.data.Bodovi - a.data.Bodovi;
         });
-
+        
         sortedDatas.forEach((item, index) => {
           this.podaci.push({
             pz: index + 1,
-            grb: item.data.imageURL || this.defaultImgURL,
+            grb: item.data.imageURL,
             nt: item.klub,
+            od: item.data.Odigranih_dvoboja,
             pp: item.data.Postignutih_pogodaka,
             pg: item.data.Primljenih_pogodaka,
             gr: item.data.Postignutih_pogodaka - item.data.Primljenih_pogodaka,
@@ -230,7 +231,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .obrub1
   {
     border: 2px solid white;
@@ -256,8 +257,8 @@
   }
 
   .klub-grb {
-  max-width: 100px;
-  max-height: 100px;
+  max-width: 50px;
+  max-height: 50px;
 }
   .search {
     margin-left: 30%;

@@ -5,10 +5,11 @@
         </div>
     
         <div data-app class="obrub1">
-            <v-text-field v-model="kolo" label="Broj utakmice (kolo)" variant="underlined"></v-text-field>
-            <v-text-field v-model="mjestoIgranja" label="Mjesto igranja" variant="underlined"></v-text-field>
-            <v-text-field v-model="stadionName" label="Naziv stadiona" variant="underlined"></v-text-field>
-            <v-text-field v-model="gledateljiBroj" label="Broj gledatelja" variant="underlined"></v-text-field>
+        <v-form ref="form" v-model="form" style="margin-top: 20px;">
+            <v-text-field :rules="[rules.required]" v-model="kolo" label="Broj utakmice (kolo)" variant="underlined"></v-text-field>
+            <v-text-field :rules="[rules.required]" v-model="mjestoIgranja" label="Mjesto igranja" variant="underlined"></v-text-field>
+            <v-text-field :rules="[rules.required]" v-model="stadionName" label="Naziv stadiona" variant="underlined"></v-text-field>
+            <v-text-field :rules="[rules.required]" v-model="gledateljiBroj" label="Broj gledatelja" variant="underlined"></v-text-field>
             <v-col
                 cols="12"
                 sm="6"
@@ -29,6 +30,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                     </template>
                     <v-date-picker
@@ -61,6 +63,7 @@
                     label="Izaberite ligu za koju je utakmica namijenjena!"
                     v-model="izabranaLiga"
                     class="vselect"
+                    :rules="[rules.required]"
                 ></v-select>
                 <br><br>
             </div>
@@ -72,17 +75,18 @@
                     <div>
                         <h2 style="font-size: 30px; margin-bottom: 10px;">Domaćin</h2>
                         <v-select
-                            :items="klubs2"
+                            :items="gostiTim"
                             label="Izaberi domaćina"
                             v-model="domacin"
                             @change="domaciDohvat"
+                            :rules="[rules.required]"
                         ></v-select>
                         <br><br>
                     </div>
                 </v-col>
 
                 <v-col class="gol">
-                    <input v-model="domacinGol" type="text" solo class="goll" maxlength="2"/>
+                    <input :rules="[rules.required]" v-model="domacinGol" type="text" solo class="goll" maxlength="2"/>
                 </v-col>
 
                 <v-col>
@@ -90,24 +94,34 @@
                 </v-col>
 
                 <v-col class="gol">
-                    <input v-model="gostiGol" type="text" solo class="goll" maxlength="2"/>
+                    <input :rules="[rules.required]" v-model="gostiGol" type="text" solo class="goll" maxlength="2"/>
                 </v-col>
 
                 <v-col>
                     <div>
                         <h2 style="font-size: 30px; margin-bottom: 10px;">Gosti</h2>
                         <v-select
-                            :items="klubs3"
+                            :items="domaciTim"
                             label="Izaberi goste"
                             v-model="gosti"
                             @change="gostiDohvat"
+                            :rules="[rules.required]"
                         ></v-select>
                         <br><br>
                     </div>
                 </v-col>
             </v-row>
 
-            <v-btn @click="createTekma" elevation="2" style="background-color: green; color: white; margin-top:40px; margin-left: 85% !important; font-size: 30px;">Kreiraj!</v-btn>
+            <v-btn 
+                @click="createTekma" 
+                elevation="2" 
+                style="background-color: green; color: white; margin-top:40px; margin-left: 85% !important; font-size: 30px;"
+                :disabled="!form"
+                :loading="isLoading"
+            >
+                Kreiraj!
+            </v-btn>
+            </v-form>
         </div>
     </div>
 </template>
@@ -116,20 +130,23 @@
 import {db, auth, collection, getDocs, setDoc, doc, onAuthStateChanged} from '@/firebase';
 export default {
     data: () => ({
-      kolo: null,
+        form: false,
+        isLoading: false,
+        kolo: null,
       stadionName: null,
       domacinGol: null,
       gostiGol: null,
       gledateljiBroj: null,
       mjestoIgranja: null,
       klubs: [],
-      klubs2: [],
-      klubs3: [],
+      gostiTim: [],
+      domaciTim: [],
       domacin: '',
       gosti: '',
       lige: [],
       izabranaLiga: '',
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      datumSat: null,
       menu: false,
       modal: false,
       menu2: false,
@@ -141,6 +158,9 @@ export default {
       gosBod: 0,
       domacinData: [],
       gostiData: [],
+      rules: {
+        required: v => !!v || 'This field is required',
+      },
     }),
 
     mounted() {
@@ -178,10 +198,11 @@ export default {
 
         trenutniDatum() {
             const current = new Date();
-            this.godina = "GODINA " + `${current.getFullYear()}`;
-            this.mjesec = "MJESEC " + `${current.getMonth()+1}`;
-            this.dan = "DAN " + `${current.getDate()}`;
-            this.satUpisa = `${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`;
+            this.godina = String("GODINA " + `${current.getFullYear()}`);
+            this.mjesec = String("MJESEC " + `${current.getMonth()+1}`);
+            this.dan = String("DAN " + `${current.getDate()}`);
+            this.satUpisa = String(`${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`);
+            this.datumSat = String(this.date + " " + this.satUpisa);
         },
 
         dohvatKlubova() {
@@ -190,18 +211,18 @@ export default {
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                     this.klubs.push(doc.id);
-                    this.klubs2 = this.klubs;
+                    this.gostiTim = this.klubs;
                 });
             })
             this.klubs = [];
         },
 
         izabraniDomaciTim() {
-            this.klubs3 = this.klubs.filter((klub) => klub !== this.domacin);
+            this.domaciTim = this.klubs.filter((klub) => klub !== this.domacin);
         },
 
         izabraniGostujuciTim() {
-            this.klubs2 = this.klubs.filter((klub) => klub !== this.gosti);
+            this.gostiTim = this.klubs.filter((klub) => klub !== this.gosti);
         },
 
         async domaciDohvat() {
@@ -209,7 +230,6 @@ export default {
                 const querySnapshot = await getDocs(collection(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Klubovi", this.domacin, "Tablica lige"));
                 querySnapshot.forEach((doc) => {
                 this.domacinData.push(doc.data());
-                console.log(this.domacinData);
             })
 
             this.izabraniDomaciTim();
@@ -220,7 +240,6 @@ export default {
             const querySnapshot = await getDocs(collection(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Klubovi", this.gosti, "Tablica lige"));
             querySnapshot.forEach((doc) => {
                 this.gostiData.push(doc.data());
-                console.log(this.gostiData);
             })
             
             this.izabraniGostujuciTim();
@@ -241,8 +260,9 @@ export default {
                 {
                     Bodovi: parseInt(this.domacinData[0].Bodovi) + parseInt(this.domBod),
                     Postignutih_pogodaka: parseInt(this.domacinData[0].Postignutih_pogodaka) + parseInt(this.domacinGol),
-                    Primljenih_pogodaka: parseInt(this.domacinData[0].Primljenih_pogodaka) + parseInt(this.gostiGol)
-
+                    Primljenih_pogodaka: parseInt(this.domacinData[0].Primljenih_pogodaka) + parseInt(this.gostiGol),
+                    Odigranih_dvoboja: parseInt(this.domacinData[0].Odigranih_dvoboja) + parseInt(1),
+                    imageURL: this.domacinData[0].imageURL
                 }
             );
         },
@@ -261,7 +281,9 @@ export default {
                 {
                     Bodovi: parseInt(this.gostiData[0].Bodovi) + parseInt(this.gosBod),
                     Postignutih_pogodaka: parseInt(this.gostiData[0].Postignutih_pogodaka) + parseInt(this.gostiGol),
-                    Primljenih_pogodaka: parseInt(this.gostiData[0].Primljenih_pogodaka) + parseInt(this.domacinGol)
+                    Primljenih_pogodaka: parseInt(this.gostiData[0].Primljenih_pogodaka) + parseInt(this.domacinGol),
+                    Odigranih_dvoboja: parseInt(this.gostiData[0].Odigranih_dvoboja) + parseInt(1),
+                    imageURL: this.gostiData[0].imageURL
                 }
             );
         },
@@ -269,7 +291,7 @@ export default {
         createTekma() {
             this.trenutniDatum();
             setDoc(
-            doc(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Utakmice", this.godina, this.mjesec, this.dan, "KOLO " + this.kolo, this.satUpisa),
+            doc(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Utakmice", this.datumSat),
             {
                 Kolo: this.kolo,
                 stadionName: this.stadionName,

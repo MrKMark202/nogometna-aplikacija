@@ -9,6 +9,7 @@ import k_klub from '../views/KreirajKLUB.vue'
 import k_tekmu from '../views/KreirajTEKMU.vue'
 import passReset from '../views/passReset.vue'
 import Table from '../views/Tablica.vue'
+import TekmaPodaci from '../views/TekmaPodaci.vue'
 
 Vue.use(VueRouter)
 
@@ -50,7 +51,7 @@ const routes = [
   },
   {
     path: '/passReset',
-    name: 'Reset you password',
+    name: 'Reset your password',
     component: passReset
   },
   {
@@ -58,6 +59,11 @@ const routes = [
     name: 'Tablica',
     component: Table
   },
+  {
+    path: '/TekmaPodaci',
+    name: 'Podaci za utakmice',
+    component: TekmaPodaci
+  }
 ]
 
 const router = new VueRouter({
