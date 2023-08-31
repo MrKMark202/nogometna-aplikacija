@@ -67,7 +67,7 @@
           SignUp
         </v-btn>
         <p v-show="isAuthenticated" class="p">
-          <img v-show="isAuthenticated" class="profilna" :src="profilePicture">
+          <img v-show="isAuthenticated" class="profilna" :src="this.profilePicture">
           {{ mail }} |
           <v-btn v-show="isAuthenticated" href="#" @click.prevent="signOut()" class="btn_style">LogOut</v-btn>
         </p>

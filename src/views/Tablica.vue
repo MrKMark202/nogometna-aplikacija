@@ -84,7 +84,7 @@
                 align: 'start',
                 value: 'nt',
             },
-            { text: 'Odigranij dvoboja', value: 'od' },
+            { text: 'Odigrani dvoboja', value: 'od' },
             { text: 'Postignuti pogodci', value: 'pp' },
             { text: 'Primljeni golovi', value: 'pg' },
             { text: 'Gol razlika', value: 'gr'},
@@ -217,7 +217,7 @@
           const documentRef = doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.selectedKlub);
 
           try {
-            if(confirm("Jeste li sigurni da želite izbridati klub")) {
+            if(confirm("Jeste li sigurni da želite izbrisati klub")) {
               await deleteDoc(documentRef);
               console.log('Document deleted successfully');
               window.location.reload();

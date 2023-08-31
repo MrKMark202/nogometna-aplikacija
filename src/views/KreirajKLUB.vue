@@ -34,7 +34,7 @@
             />
 
             <v-btn 
-              @click="UploadLigaImageToStorage()" 
+              @click="UploadKlubImageToStorage()" 
               elevation="2" 
               :disabled="!form"
               :loading="isLoading"
@@ -89,7 +89,7 @@
         this.selectedLiga = '';
 		  },
 
-      async UploadLigaImageToStorage() {
+      async UploadKlubImageToStorage() {
       if(this.$refs.KlubPictureFile.files[0]) {
         const storageRef = ref(storage, "Users/" + auth.currentUser.email + "/KlubPicture/ " + this.clubName);
 
