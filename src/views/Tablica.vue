@@ -84,7 +84,7 @@
                 align: 'start',
                 value: 'nt',
             },
-            { text: 'Odigrani dvoboja', value: 'od' },
+            { text: 'Odigranih dvoboja', value: 'od' },
             { text: 'Postignuti pogodci', value: 'pp' },
             { text: 'Primljeni golovi', value: 'pg' },
             { text: 'Gol razlika', value: 'gr'},
