@@ -25,24 +25,24 @@
                 About us
               </v-list-item>
 
-              <v-list-item v-show="isAuthenticated" to="/KreirajLigu" class="btn_style">
+              <v-list-item v-show="isAuthenticated" to="/Liga" class="btn_style">
                 Kreiraj ligu
               </v-list-item>
 
-              <v-list-item v-show="isAuthenticated" to="/KreirajKlub" class="btn_style">
-                Kreiraj klub
+              <v-list-item v-show="isAuthenticated" to="/Igrac" class="btn_style">
+                Kreiraj igrača
               </v-list-item>
 
-              <v-list-item v-show="isAuthenticated" to="/KreirajUtakmicu" class="btn_style">
-                Kreiraj utakmicu
+              <v-list-item v-show="isAuthenticated" to="/Game" class="btn_style">
+                Kreiraj partiju
               </v-list-item>
 
               <v-list-item v-show="isAuthenticated" to="/Tablica" class="btn_style">
                 Tablica
               </v-list-item>
 
-              <v-list-item v-show="isAuthenticated" to="/TekmaPodaci" class="btn_style">
-                Pregled utakmica
+              <v-list-item v-show="isAuthenticated" to="/PartijaPodaci" class="btn_style">
+                Pregled partija
               </v-list-item>
             </v-list-item-group>
           </v-list>

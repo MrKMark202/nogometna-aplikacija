@@ -1,14 +1,12 @@
 <template>
     <div>
         <div class="naslov">
-            <h1>Kreiraj klub</h1>
+            <h1>Kreiraj Igrača</h1>
         </div>
     
         <div class="obrub" data-app>
           <v-form ref="form" v-model="form" style="margin-top: 20px;">
-            <v-text-field v-model="clubName" label="Naziv kluba" variant="underlined" :rules="[rules.required]"></v-text-field>
-            <v-text-field v-model="clubYear" label="Godina osnivanja" variant="underlined" :rules="[rules.required]"></v-text-field>
-            <v-text-field v-model="clubCountry" label="Država" variant="underlined" :rules="[rules.required]"></v-text-field>
+            <v-text-field v-model="playerName" label="Ime Igrača" variant="underlined" :rules="[rules.required]"></v-text-field>
 
             <v-row class="row2">
               <v-col>
@@ -16,7 +14,7 @@
                       <v-select
                         :rules="[rules.required]"
                         :items="ligas"
-                        label="Izaberite ligu za koju kreirate klub!"
+                        label="Izaberite ligu u koju želite kreirati igrača!"
                         v-model="selectedLiga"
                         class="vselect"
                       ></v-select>
@@ -25,16 +23,16 @@
               </v-col>
             </v-row>
           </v-form>
-            <h3 class="grb">Grb Kluba</h3>
+            <h3 class="grb">Profilna igrača</h3>
 
             <input 
               class="butot" 
               type="file" 
-              ref="KlubPictureFile" 
+              ref="PlayerPictureFile" 
             />
 
             <v-btn 
-              @click="UploadKlubImageToStorage()" 
+              @click="UploadPlayerImageToStorage()" 
               elevation="2" 
               :disabled="!form"
               :loading="isLoading"
@@ -49,12 +47,10 @@
   export default {
     name: "CreateClub",
     data: () => ({
-      clubName: null,
-      clubCountry: null,
-      clubYear: null,
+      playerName: null,
       ligas: [],
       selectedLiga: '',
-      KlubPictureURL: '',
+      PlayerPictureURL: '',
       form: false,
       isLoading: false,
       rules: {
@@ -83,21 +79,19 @@
 
     methods: {
       clearFormData() {
-			  this.clubName = null;
-			  this.clubYear = null;
-			  this.clubCountry = null;
-        this.selectedLiga = '';
-		  },
+		    this.playerName = null;
+            this.selectedLiga = '';
+	    },
 
-      async UploadKlubImageToStorage() {
-      if(this.$refs.KlubPictureFile.files[0]) {
+      async UploadPlayerImageToStorage() {
+      if(this.$refs.PlayerPictureFile.files[0]) {
         const storageRef = ref(storage, "Users/" + auth.currentUser.email + "/KlubPicture/ " + this.clubName);
 
-        await uploadBytes(storageRef, this.$refs.KlubPictureFile.files[0]).then((snapshot) => {
+        await uploadBytes(storageRef, this.$refs.PlayerPictureFile.files[0]).then((snapshot) => {
         console.log("Upload complete!");
 
           getDownloadURL(snapshot.ref).then((url) => {
-            this.KlubPictureURL = url;
+            this.PlayerPictureURL = url;
             this.createKlub();
             this.createDataTable();
           }).catch((error) => {
@@ -107,8 +101,8 @@
           console.error("Error uploading image:", error);
         });
       }
-      else if (!this.$refs.KlubPictureFile.files[0]) {
-        this.KlubPictureURL = 'https://firebasestorage.googleapis.com/v0/b/nogometna--aplikacija.appspot.com/o/Users%2Fmk%40gmail.com%2FKlubPicture%2Funknown_klub.png?alt=media&token=6ebf3512-0a33-4b92-8362-f959b2b23b47';
+      else if (!this.$refs.PlayerPictureFile.files[0]) {
+        //this.PlayerPictureURL = 'https://firebasestorage.googleapis.com/v0/b/nogometna--aplikacija.appspot.com/o/Users%2Fmk%40gmail.com%2FKlubPicture%2Funknown_klub.png?alt=media&token=6ebf3512-0a33-4b92-8362-f959b2b23b47';
         this.createKlub();
         this.createDataTable();
       }
@@ -116,25 +110,27 @@
 
       async createKlub() {
         await setDoc(
-          doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.clubName),
+          doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Igraci", this.playerName),
           {
-            clubName: this.clubName,
-            clubYear: this.clubYear,
-            clubCountry: this.clubCountry,
-            imageURL: this.KlubPictureURL
+            playerName: this.playerName,
+            imageURL: this.PlayerPictureURL
           }
         );
         },
 
         async createDataTable() {
           await setDoc(
-            doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.clubName, "Tablica lige", "Podaci"),
+            doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Igraci", this.playerName, "Tablica lige", "Podaci"),
             {
               Bodovi: 0,
-              Postignutih_pogodaka: 0,
-              Primljenih_pogodaka: 0,
+              Ubacenih_loptica: 0,
+              Primljenih_loptica: 0,
               Odigranih_dvoboja: 0,
-              imageURL: this.KlubPictureURL
+              Pobjede: 0,
+              Postene_pobjede: 0,
+              Direktni_porazi: 0,
+              Porazi: 0,
+              imageURL: this.PlayerPictureURL
             }
           )
           this.clearFormData();
@@ -153,6 +149,7 @@
     margin-left: 20%;
     margin-right: 20%;
     margin-top: 100px; 
+    margin-bottom: 100px;
   }
 
   .v-text-field

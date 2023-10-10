@@ -4,12 +4,12 @@ import HomeView from '../views/Home.vue'
 import aboutUs from '../views/Aboutus.vue'
 import login from '../views/Login.vue'
 import signup from '../views/Signup.vue'
-import k_ligu from '../views/KreirajLIGU.vue'
-import k_klub from '../views/KreirajKLUB.vue'
-import k_tekmu from '../views/KreirajTEKMU.vue'
+import Liga from '../views/Liga.vue'
+import Igrac from '../views/Igrac.vue'
+import game from '../views/Game.vue'
 import passReset from '../views/passReset.vue'
 import Table from '../views/Tablica.vue'
-import TekmaPodaci from '../views/TekmaPodaci.vue'
+import PartijaPodaci from '../views/PartijaPodaci.vue'
 
 Vue.use(VueRouter)
 
@@ -35,24 +35,24 @@ const routes = [
     component: signup
   },
   {
-    path: '/KreirajLigu',
-    name: 'KreirajLigu',
-    component: k_ligu
-  },
-  {
-    path: '/KreirajKlub',
-    name: 'KreirajKlub',
-    component: k_klub
-  },
-  {
-    path: '/KreirajUtakmicu',
-    name: 'KreirajUtakmicu',
-    component: k_tekmu
-  },
-  {
     path: '/passReset',
     name: 'Reset your password',
     component: passReset
+  },
+  {
+    path: '/Liga',
+    name: 'Kreiranje lige',
+    component: Liga
+  },
+  {
+    path: '/Igrac',
+    name: 'Kreiranje igraca',
+    component: Igrac
+  },
+  {
+    path: '/Game',
+    name: 'Kreiranje Partije',
+    component: game
   },
   {
     path: '/Tablica',
@@ -60,9 +60,9 @@ const routes = [
     component: Table
   },
   {
-    path: '/TekmaPodaci',
+    path: '/PartijaPodaci',
     name: 'Podaci za utakmice',
-    component: TekmaPodaci
+    component: PartijaPodaci
   }
 ]
 

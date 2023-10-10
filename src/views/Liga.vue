@@ -31,7 +31,7 @@
 </template>
 
 <script>
-    import {db, doc, setDoc, auth, ref, storage, uploadBytes,getDownloadURL } from "@/firebase"
+    import {db, doc, setDoc, auth, ref, storage, uploadBytes, getDownloadURL } from "@/firebase"
 
     export default {
         name: "createLIGA",
@@ -72,7 +72,7 @@
                     });
                 }
                 else if (!this.$refs.ligaPictureFile.files[0]) {
-                    this.LigaPictureURL = 'https://firebasestorage.googleapis.com/v0/b/nogometna--aplikacija.appspot.com/o/Users%2Fmk%40gmail.com%2FLigaPicture%2Funknown_league.png?alt=media&token=dac10b95-49a6-47b8-b930-574ecaa60988';
+                    //this.LigaPictureURL = 'https://firebasestorage.googleapis.com/v0/b/nogometna--aplikacija.appspot.com/o/Users%2Fmk%40gmail.com%2FLigaPicture%2Funknown_league.png?alt=media&token=dac10b95-49a6-47b8-b930-574ecaa60988';
                     this.createLiga();
                 }
             },
@@ -93,7 +93,6 @@
     }
 </script>
 
-
 <style>
     .obrub
     {
@@ -103,8 +102,7 @@
         margin-left: 25% !important;
         margin-right: 25% !important;
         margin-top: 100px;
-
-        
+        margin-bottom: 100px;
     }
 
     .v-text-field

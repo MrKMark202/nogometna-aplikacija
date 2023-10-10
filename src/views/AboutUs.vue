@@ -7,9 +7,8 @@
 
     <div class="paragrafi">
       <p>
-        Ovo je web aplikacija koja vam omogućava kreiranje raznih klubova i liga, razne utakmice koje su se dogodile, te obrada sveukupnog rezultata.
-        Kreirate ligu, klubove u toj ligi, te utakmice i na kraju upisa svih traženih podataka za utakmicu će se obraditi konačni rezultat.
-        Ukoliko pogresite u pravljenju lige, kluba ili utakmice, imate mogućnost brisanja istoga.
+        Ovo je web aplikacija koja vam omogućava kreiranje liga sa svim vašim prijateljima, te kreiranje partija (dvoboja) između vas i na kraju imate
+        prikaz rezultata kroz tablicu te prikaz svih kreiranih dvoboja. Aplikacija je naprevljena u svrhu zabave tako da samo naprijed!
       </p>
     </div>
   </div>

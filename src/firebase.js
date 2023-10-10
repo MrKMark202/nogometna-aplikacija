@@ -9,13 +9,13 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBfe_rWCxRrfBtR3M-G0-HueFHXcJAqh9s",
-  authDomain: "nogometna--aplikacija.firebaseapp.com",
-  projectId: "nogometna--aplikacija",
-  storageBucket: "nogometna--aplikacija.appspot.com",
-  messagingSenderId: "892676413382",
-  appId: "1:892676413382:web:9a524de1466fd206a304c7",
-  measurementId: "G-SP5L1LBWPX"
+  apiKey: "AIzaSyB_VlqSESjC5F0SrD3UAE3gqWVbQNAfn58",
+  authDomain: "ball-pool-app-deaf9.firebaseapp.com",
+  projectId: "ball-pool-app-deaf9",
+  storageBucket: "ball-pool-app-deaf9.appspot.com",
+  messagingSenderId: "457634956155",
+  appId: "1:457634956155:web:de33c07d58611df26cb3de",
+  measurementId: "G-ESXCYXWRF8"
 };
 
 //firebase.initializeApp(firebaseConfig);
