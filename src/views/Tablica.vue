@@ -7,21 +7,31 @@
           </v-col>
           
           <v-col cols="4" >
-            <div style="color: black !important; margin-top: 0px !important">
-              <h2 style="text-align: center !important;">Tablica</h2>
+            <div class="naslov" style="color: black !important; margin-top: 0px !important">
+              <h1>Tablica</h1>
             </div>
           </v-col>
         </v-row>
        
-        <div class="container">
-          <v-btn  @click="izbrisiLigu()" elevation="2" style="background-color: red; color: white; margin-top:40px; font-size: 30px;">Izbriši ligu!</v-btn>
+        <div class="grid-container2">
+          <v-btn class="grid-item4" @click="izbrisiLigu()" elevation="2" style="background-color: red; color: white; margin-top:40px; font-size: 30px;">Izbriši ligu!</v-btn>
+          <v-btn class="grid-item4" @click="izbrisiKlub()" elevation="2" style="background-color: red; color: white; margin-top:40px; font-size: 30px;">Izbriši klub!</v-btn>
             <v-select
+              class="grid-item4"
               :items="ligas"
               @change="dohvatKlubova(), loadLeagueImage()"
               label="Izaberite ligu za prikazati!"
               v-model="selectedLiga"
               style="width: 350px;"
             ></v-select>
+
+            <v-select
+              class="grid-item4"
+              :items="klubs"
+              label="Izaberite klub!"
+              v-model="selectedKlub"
+              style="width: 350px;"
+              ></v-select>
         </div>
                 
         <v-text-field
@@ -193,6 +203,30 @@
           }
         }
       },
+
+      async izbrisiKlub() {
+        if(!this.selectedLiga) {
+          alert("Prvo izaberite ligu da bi ste mogli klub!");
+        }
+        
+        else if(this.selectedLiga && !this.selectedKlub) {
+          alert("Izaberite klub!");
+        }
+
+        else {
+          const documentRef = doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.selectedKlub);
+
+          try {
+            if(confirm("Jeste li sigurni da želite izbrisati klub")) {
+              await deleteDoc(documentRef);
+              console.log('Document deleted successfully');
+              window.location.reload();
+            }
+          } catch (error) {
+            console.error('Error deleting document:', error);
+          }
+        }
+      },
     },
   }
 </script>
@@ -208,10 +242,18 @@
     margin-bottom: 100px;
   }
 
-  .container {
+  .grid-container2 {
+    display: grid;
+    grid-template-columns: auto auto;
     background-color: white;
+    justify-content: space-between;
     align-items: center;
-    padding-left: 40%;
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+  .grid-item4 {
+    background-color: white;
+    padding: 20px;
   }
 
   .klub-grb {
